@@ -9,4 +9,7 @@
 `git push`  
 
 ## To Check  
-`git pull`  
+`git pull` 
+
+## To Print File  
+`cat (file)`  
