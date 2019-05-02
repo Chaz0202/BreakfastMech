@@ -27,6 +27,9 @@ led6 = 25
 #list of all LEDs
 led_list = [led1, led2, led3, led4, led5, led6]
 
+working = True #whether the machine is currently working, used to stop the machine
+choice_made = False
+
 def button1_pushed(event): #to be run when button 1 pushed
 	global choiceA
 	choiceA = "button1"
@@ -51,6 +54,21 @@ def button4_pushed(event): #to be run when button 4 pushed
 	GPIO.output(led3, GPIO.LOW) #turn off other spread choice LED
 	GPIO.output(led4, GPIO.HIGH) #turn on associated LED
 
+def button5_pushed(event): #to be run when button 5 pushed
+	global choice_made
+	choice_made = True
+	global working
+	global led5_pwm
+	led5_pwm = GPIO.PWM(led5, 100)
+	led5_pwm.start(0)
+	while working == True:
+		for dc in range(0,50,1):
+			led5_pwm.ChangeDutyCycle(dc)
+			time.sleep(.01)
+		for dc in range(50, 0, -1):
+			led5_pwm.ChangeDutyCycle(dc)
+			time.sleep(.01)
+
 GPIO.setmode(GPIO.BCM) #BCM pin numbering
 
 GPIO.setup(button_list, GPIO.IN, pull_up_down=GPIO.PUD_UP) #setup all buttons as input
@@ -67,18 +85,22 @@ GPIO.add_event_callback(button1, button1_pushed)
 GPIO.add_event_callback(button2, button2_pushed)
 GPIO.add_event_callback(button3, button3_pushed)
 GPIO.add_event_callback(button4, button4_pushed)
+GPIO.add_event_callback(button5, button5_pushed)
 
 #setup LEDs as output
 GPIO.setup(led_list, GPIO.OUT, initial=GPIO.LOW)
 
 def main():
 	#buttons are pushed and variables save choices
-	GPIO.wait_for_edge(button5, GPIO.RISING) #wait until begin button pushed
+	while choice_made == False:
+		time.sleep(.1)
 	print(choiceA, choiceB)
+	time.sleep(4)
 
 try:
 	main()
 
 finally:
+	working = False
 	print("quitting")
 	GPIO.cleanup() #remove all pin setups
