@@ -125,8 +125,8 @@ def bread_spread():
 		kit.continuous_servo[1].throttle = 0
 	elif choiceA == "whole wheat":
 		kit.continuous_servo[2].throttle = -.5
-                time.sleep(2)
-                kit.continuous_servo[2].throttle = 0
+		time.sleep(2)
+		kit.continuous_servo[2].throttle = 0
 	time.sleep(1)
 	kit.servo[0].angle = 150
 	time.sleep(1)
@@ -145,8 +145,6 @@ def bread_spread():
 	kit.servo[0].angle = 150
 	time.sleep(1)
 	kit.servo[3].angle = 180
-	
-
 
 GPIO.setmode(GPIO.BCM) #BCM pin numbering
 
