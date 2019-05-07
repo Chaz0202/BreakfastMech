@@ -4,6 +4,16 @@ from adafruit_servokit import ServoKit
 
 kit = ServoKit(channels=16, address=65) #i2c address 1x41
 
+#Hat pins for Servos
+#0-Bread Pusher
+#1-Left Condiment Holder
+#2-Right Condiment Holder
+#3-Condiment Spreader
+#4-Toaster Primer
+#5-Toater Rotation
+#6-Top Bread Chute 
+#7-Botton Bread Chute
+
 #GPIO pins of the buttons (in BCM)
 button1 = 5
 button2 = 6
@@ -35,25 +45,25 @@ choice_made = False
 
 def button1_pushed(event): #to be run when button 1 pushed
 	global choiceA
-	choiceA = "button1"
+	choiceA = "white bread"
 	GPIO.output(led2, GPIO.LOW) #turn off other bread choice LED
 	GPIO.output(led1, GPIO.HIGH) #turn on associated LED
 
 def button2_pushed(event): #to be run when button 2 pushed
 	global choiceA
-	choiceA = "button2"
+	choiceA = "whole wheat"
 	GPIO.output(led1, GPIO.LOW) #turn off other bread choice LED
 	GPIO.output(led2, GPIO.HIGH) #turn on associated LED
 
 def button3_pushed(event): #to be run when button 3 pushed
 	global choiceB
-	choiceB = "button3"
+	choiceB = "jam"
 	GPIO.output(led4, GPIO.LOW) #turn off the other spread choice LED
 	GPIO.output(led3, GPIO.HIGH) #turn on associated LED
 
 def button4_pushed(event): #to be run when button 4 pushed
 	global choiceB
-	choiceB = "button4"
+	choiceB = "honey"
 	GPIO.output(led3, GPIO.LOW) #turn off other spread choice LED
 	GPIO.output(led4, GPIO.HIGH) #turn on associated LED
 
@@ -71,6 +81,72 @@ def button5_pushed(event): #to be run when button 5 pushed
 		for dc in range(50, 0, -1):
 			led5_pwm.ChangeDutyCycle(dc)
 			time.sleep(.01)
+
+def bread_drop():
+	if choiceA == "white bread":
+		kit.servo[6].angle = 180
+		time.sleep(1)
+		kit.servo[6].angle = 0
+	elif choiceA == "whole wheat":
+		kit.servo[7].angle = 180
+		time.sleep(1)
+		kit.servo[7].angle = 90
+
+def toaster_rotate_to_bread():
+	kit.servo[5].angle = 90
+	time.sleep(1)
+	kit.servo[5].angle = 140
+
+def toaster_prime():
+	time.sleep(1)
+	kit.continuous_servo[4].throttle = -1
+	time.sleep(2.5)
+	kit.continuous_servo[4].throttle = 0
+	time.sleep(.5)
+	kit.continuous_servo[4].throttle = 1
+	time.sleep(2.5)
+	kit.continuous_servo[4].throttle = 0
+
+def toaster_rotate():
+	kit.servo[5].angle = 140
+	time.sleep(1)
+	kit.servo[5].angle = 90
+	time.sleep(1)
+	kit.servo[5].angle = 0
+	time.sleep(1)
+	kit.servo[5].angle = 90
+
+def bread_spread():
+	kit.servo[0].angle = 90
+	time.sleep(1)
+	if choiceB == "jam":
+		kit.continuous_servo[1].throttle = -.5
+		time.sleep(2)
+		kit.continuous_servo[1].throttle = 0
+	elif choiceA == "whole wheat":
+		kit.continuous_servo[2].throttle = -.5
+                time.sleep(2)
+                kit.continuous_servo[2].throttle = 0
+	time.sleep(1)
+	kit.servo[0].angle = 150
+	time.sleep(1)
+	kit.servo[3].angle = 90
+	time.sleep(1)
+	kit.servo[0].angle = 90
+	time.sleep(1)
+	kit.servo[3].angle = 70
+	time.sleep(.1)
+	kit.servo[3].angle = 90
+	time.sleep(.1)
+	kit.servo[3].angle = 70
+	time.sleep(.1)
+	kit.servo[3].angle = 90
+	time.sleep(1)
+	kit.servo[0].angle = 150
+	time.sleep(1)
+	kit.servo[3].angle = 180
+	
+
 
 GPIO.setmode(GPIO.BCM) #BCM pin numbering
 
@@ -97,14 +173,13 @@ def main():
 	#buttons are pushed and variables save choices
 	while choice_made == False:
 		time.sleep(.1)
+	toaster_rotate_to_bread()
+	bread_drop()
+	toaster_prime()
+	toaster_rotate()
+	bread_spread()
 	print(choiceA, choiceB)
-	if choiceA == "button1" and choiceB == "button2" :
-		kit.servo[0].angle = 90 #Rotate to 180 degrees
-		time.sleep(1)
-		kit.servo[0].angle = 0 #Rotate to 0 degrees
-
-	time.sleep(4)
-
+	time.sleep(.5)
 try:
 	main()
 
