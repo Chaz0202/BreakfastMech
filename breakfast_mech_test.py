@@ -82,7 +82,9 @@ def button5_pushed(event): #to be run when button 5 pushed
 			led5_pwm.ChangeDutyCycle(dc)
 			time.sleep(.01)
 def setup():
-	kit.servo[5].angle = 90
+	kit.servo[5].angle = 95
+	kit.servo[0].angle = 0
+	kit.servo[3].angle = 0
 
 def bread_drop():
 	if choiceA == "white bread":
@@ -91,11 +93,11 @@ def bread_drop():
 		kit.servo[6].angle = 130
 	elif choiceA == "whole wheat":
 		kit.servo[7].angle = 180
-		time.sleep(1)
+		time.sleep(2)
 		kit.servo[7].angle = 90
 
 def toaster_rotate_to_bread():
-	kit.servo[5].angle = 90
+	kit.servo[5].angle = 95
 	time.sleep(1)
 	kit.servo[5].angle = 150
 	time.sleep(1)
@@ -120,30 +122,30 @@ def toaster_rotate():
 	time.sleep(1)
 
 def bread_spread():
-	kit.servo[0].angle = 90
+	kit.servo[0].angle = 75
 	time.sleep(1)
-	if choiceB == "jam":
-		kit.continuous_servo[1].throttle = -.5
-		time.sleep(2)
-		kit.continuous_servo[1].throttle = 0
-	elif choiceA == "whole wheat":
-		kit.continuous_servo[2].throttle = -.5
-		time.sleep(2)
-		kit.continuous_servo[2].throttle = 0
+	#if choiceB == "jam":
+		#kit.continuous_servo[1].throttle = -.5
+		#time.sleep(2)
+		#kit.continuous_servo[1].throttle = 0
+	#elif choiceA == "whole wheat":
+		#kit.continuous_servo[2].throttle = -.5
+		#time.sleep(2)
+		#kit.continuous_servo[2].throttle = 0
 	time.sleep(1)
 	kit.servo[0].angle = 0
 	time.sleep(1)
-	kit.servo[3].angle = 90
+	kit.servo[3].angle = 160
 	time.sleep(1)
-	kit.servo[0].angle = 90
+	kit.servo[0].angle = 75
 	time.sleep(1)
-	kit.servo[3].angle = 85
-	time.sleep(.1)
-	kit.servo[3].angle = 90
-	time.sleep(.1)
-	kit.servo[3].angle = 85
-	time.sleep(.1)
-	kit.servo[3].angle = 90
+	kit.servo[3].angle = 130
+	time.sleep(.2)
+	kit.servo[3].angle = 160
+	time.sleep(.2)
+	kit.servo[3].angle = 130
+	time.sleep(.2)
+	kit.servo[3].angle = 160
 	time.sleep(1)
 	kit.servo[0].angle = 0
 	time.sleep(1)
@@ -174,11 +176,12 @@ def main():
 	#buttons are pushed and variables save choices
 	while choice_made == False:
 		time.sleep(.1)
+	setup()
 	toaster_rotate_to_bread()
 	bread_drop()
 	toaster_prime()
 	toaster_rotate()
-	#bread_spread()
+	bread_spread()
 	print(choiceA, choiceB)
 
 
