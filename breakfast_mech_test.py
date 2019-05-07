@@ -11,7 +11,7 @@ kit = ServoKit(channels=16, address=65) #i2c address 1x41
 #3-Condiment Spreader
 #4-Toaster Primer
 #5-Toater Rotation
-#6-Top Bread Chute 
+#6-Top Bread Chute
 #7-Botton Bread Chute
 
 #GPIO pins of the buttons (in BCM)
@@ -81,12 +81,14 @@ def button5_pushed(event): #to be run when button 5 pushed
 		for dc in range(50, 0, -1):
 			led5_pwm.ChangeDutyCycle(dc)
 			time.sleep(.01)
+def setup():
+	kit.servo[5].angle = 90
 
 def bread_drop():
 	if choiceA == "white bread":
-		kit.servo[6].angle = 180
-		time.sleep(1)
 		kit.servo[6].angle = 0
+		time.sleep(2)
+		kit.servo[6].angle = 130
 	elif choiceA == "whole wheat":
 		kit.servo[7].angle = 180
 		time.sleep(1)
@@ -95,10 +97,11 @@ def bread_drop():
 def toaster_rotate_to_bread():
 	kit.servo[5].angle = 90
 	time.sleep(1)
-	kit.servo[5].angle = 140
+	kit.servo[5].angle = 150
+	time.sleep(1)
 
 def toaster_prime():
-	time.sleep(1)
+	time.sleep(2)
 	kit.continuous_servo[4].throttle = -1
 	time.sleep(2.5)
 	kit.continuous_servo[4].throttle = 0
@@ -108,13 +111,13 @@ def toaster_prime():
 	kit.continuous_servo[4].throttle = 0
 
 def toaster_rotate():
-	kit.servo[5].angle = 140
 	time.sleep(1)
-	kit.servo[5].angle = 90
+	kit.servo[5].angle = 95
 	time.sleep(1)
 	kit.servo[5].angle = 0
 	time.sleep(1)
-	kit.servo[5].angle = 90
+	kit.servo[5].angle = 95
+	time.sleep(1)
 
 def bread_spread():
 	kit.servo[0].angle = 90
@@ -128,23 +131,23 @@ def bread_spread():
 		time.sleep(2)
 		kit.continuous_servo[2].throttle = 0
 	time.sleep(1)
-	kit.servo[0].angle = 150
+	kit.servo[0].angle = 0
 	time.sleep(1)
 	kit.servo[3].angle = 90
 	time.sleep(1)
 	kit.servo[0].angle = 90
 	time.sleep(1)
-	kit.servo[3].angle = 70
+	kit.servo[3].angle = 85
 	time.sleep(.1)
 	kit.servo[3].angle = 90
 	time.sleep(.1)
-	kit.servo[3].angle = 70
+	kit.servo[3].angle = 85
 	time.sleep(.1)
 	kit.servo[3].angle = 90
 	time.sleep(1)
-	kit.servo[0].angle = 150
+	kit.servo[0].angle = 0
 	time.sleep(1)
-	kit.servo[3].angle = 180
+	kit.servo[3].angle = 0
 
 GPIO.setmode(GPIO.BCM) #BCM pin numbering
 
@@ -175,9 +178,10 @@ def main():
 	bread_drop()
 	toaster_prime()
 	toaster_rotate()
-	bread_spread()
+	#bread_spread()
 	print(choiceA, choiceB)
-	time.sleep(.5)
+
+
 try:
 	main()
 
