@@ -129,11 +129,11 @@ def bread_spread():
 	kit.servo[0].angle = 75
 	time.sleep(1)
 	if choiceB == "jam":
-		kit.continuous_servo[1].throttle = .5
+		kit.continuous_servo[1].throttle = .1
 		time.sleep(2)
 		kit.continuous_servo[1].throttle = 0
-	elif choiceA == "whole wheat":
-		kit.continuous_servo[2].throttle = -.5
+	elif choiceB == "honey":
+		kit.continuous_servo[2].throttle = -.1
 		time.sleep(2)
 		kit.continuous_servo[2].throttle = 0
 	time.sleep(1)
