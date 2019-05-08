@@ -105,7 +105,7 @@ def toaster_rotate_to_bread():
 def toaster_prime():
 	time.sleep(2)
 	kit.continuous_servo[4].throttle = -1
-	time.sleep(2.5)
+	time.sleep(5)
 	kit.continuous_servo[4].throttle = 0
 	time.sleep(.5)
 	kit.continuous_servo[4].throttle = 1
@@ -115,23 +115,23 @@ def toaster_prime():
 def toaster_rotate():
 	time.sleep(1)
 	kit.servo[5].angle = 95
-	time.sleep(1)
-	kit.servo[5].angle = 0
-	time.sleep(1)
+	time.sleep(85)
+	kit.servo[5].angle = 20
+	time.sleep(10)
 	kit.servo[5].angle = 95
 	time.sleep(1)
 
 def bread_spread():
 	kit.servo[0].angle = 75
 	time.sleep(1)
-	#if choiceB == "jam":
-		#kit.continuous_servo[1].throttle = -.5
-		#time.sleep(2)
-		#kit.continuous_servo[1].throttle = 0
-	#elif choiceA == "whole wheat":
-		#kit.continuous_servo[2].throttle = -.5
-		#time.sleep(2)
-		#kit.continuous_servo[2].throttle = 0
+	if choiceB == "jam":
+		kit.continuous_servo[1].throttle = -.5
+		time.sleep(2)
+		kit.continuous_servo[1].throttle = 0
+	elif choiceA == "whole wheat":
+		kit.continuous_servo[2].throttle = -.5
+		time.sleep(2)
+		kit.continuous_servo[2].throttle = 0
 	time.sleep(1)
 	kit.servo[0].angle = 0
 	time.sleep(1)
