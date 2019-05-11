@@ -163,12 +163,17 @@ def bread_spread():
 		time.sleep(.2)
 	time.sleep(1)
 	kit.servo[0].angle = 0
-	for t in range(4):
-		kit.servo[3].angle = 150 #Rotate to 180 degrees
-		time.sleep(.2)
-		kit.servo[3].angle = 170 #Rotate to 0 degrees
-		time.sleep(.2)
-	kit.servo[3].angle = 150
+	kit.servo[3].angle = 140
+	time.sleep(1)
+
+def ring_bell():
+	for n in range(3):
+		for i in range(4):
+			kit.servo[3].angle = 170 #Rotate to 180 degrees
+			time.sleep(.1)
+			kit.servo[3].angle = 150 #Rotate to 0 degrees
+			time.sleep(.1)
+		time.sleep(1.5)
 
 GPIO.setmode(GPIO.BCM) #BCM pin numbering
 
@@ -206,7 +211,7 @@ def main():
 	toaster_prime()
 	toaster_rotate()
 	bread_spread()
-
+	ring_bell()
 
 try:
 	main()
