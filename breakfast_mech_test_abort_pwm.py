@@ -2,6 +2,7 @@ import RPi.GPIO as GPIO
 import time
 from adafruit_servokit import ServoKit
 import sys
+from threading import Thread
 
 kit = ServoKit(channels=16, address=65) #i2c address 1x41
 
@@ -70,36 +71,38 @@ def button4_pushed(event): #to be run when button 4 pushed
 	GPIO.output(led3, GPIO.LOW) #turn off other spread choice LED
 	GPIO.output(led4, GPIO.HIGH) #turn on associated LED
 
+def led5_glow(): #glowing [GO] LED
+	global working
+	led5_pwm = GPIO.PWM(led5, 100)
+	led5_pwm.start(0)
+	while working == True: #for when [ABORT] used
+		for dc in range(0,50,1): #increase brightness
+			led5_pwm.ChangeDutyCycle(dc)
+			time.sleep(.01)
+		for dc in range(50, 0, -1): #decrease brightness
+			led5_pwm.ChangeDutyCycle(dc)
+			time.sleep(.01)
+
 def button5_pushed(event): #to be run when button 5 pushed
 	global choice_made
 	choice_made = True
-	global working
-	global led5_pwm
-	GPIO.output(led5, GPIO.HIGH)
-#	led5_pwm = GPIO.PWM(led5, 100)
-#	led5_pwm.start(0)
-#	while working == True:
-#		for dc in range(0,50,1):
-#			led5_pwm.ChangeDutyCycle(dc)
-#			time.sleep(.01)
-#		for dc in range(50, 0, -1):
-#			led5_pwm.ChangeDutyCycle(dc)
-#			time.sleep(.01)
+	global t
+	t = Thread(target=led5_glow) #start thread to glow LED
+	t.start()
 
 def button6_pushed(event): #to be run when button 6 pushed
-	print("abort?")
 	global working
-	working = False
+	working = False #stop glowing LED
 	GPIO.output(led6, GPIO.HIGH) #turn on associated LED
 	print("ABORT!")
-	GPIO.cleanup()
-	sys.exit()
+	GPIO.cleanup() #turn off all LEDs and inputs
+	sys.exit() #terminate program
 
 def setup():
 	kit.servo[0].angle = 0
 	kit.continuous_servo[1].throttle = 0
 	kit.continuous_servo[2].throttle = 0
-	kit.servo[3].angle = 0
+	kit.servo[3].angle = 150
 	kit.continuous_servo[4].throttle = 0
 	kit.servo[5].angle = 100
 	kit.servo[6].angle = 130
@@ -138,7 +141,7 @@ def toaster_rotate():
 		print(t)
 		time.sleep(1)
 	kit.servo[5].angle = 10
-	time.sleep(20)
+	time.sleep(25)
 	kit.servo[5].angle = 100
 	time.sleep(1)
 
@@ -153,24 +156,19 @@ def bread_spread():
 		kit.continuous_servo[2].throttle = -.1
 		time.sleep(2)
 		kit.continuous_servo[2].throttle = 0
+	for t in range(4):
+		kit.servo[3].angle = 30 #Rotate to 180 degrees
+		time.sleep(.2)
+		kit.servo[3].angle = 70 #Rotate to 0 degrees
+		time.sleep(.2)
 	time.sleep(1)
 	kit.servo[0].angle = 0
-	time.sleep(1)
-	kit.servo[3].angle = 160
-	time.sleep(1)
-	kit.servo[0].angle = 75
-	time.sleep(1)
-	kit.servo[3].angle = 130
-	time.sleep(.2)
-	kit.servo[3].angle = 160
-	time.sleep(.2)
-	kit.servo[3].angle = 130
-	time.sleep(.2)
-	kit.servo[3].angle = 160
-	time.sleep(1)
-	kit.servo[0].angle = 0
-	time.sleep(1)
-	kit.servo[3].angle = 0
+	for t in range(4):
+		kit.servo[3].angle = 150 #Rotate to 180 degrees
+		time.sleep(.2)
+		kit.servo[3].angle = 170 #Rotate to 0 degrees
+		time.sleep(.2)
+	kit.servo[3].angle = 150
 
 GPIO.setmode(GPIO.BCM) #BCM pin numbering
 
